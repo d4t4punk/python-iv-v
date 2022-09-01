@@ -2,7 +2,7 @@
 # Define connection routines for various databases
 # Expand as necessary
 # PostgreSQL connection script
-
+# TODO - subtype this routine
 # imports
 
 import psycopg2
