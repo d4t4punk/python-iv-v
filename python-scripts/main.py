@@ -25,9 +25,6 @@ import yaml
 
 import pgconnect
 
-
-
-
 def main(argv):
     print('main')
     # open the config
@@ -41,31 +38,37 @@ def main(argv):
     ivvusr = config['IVVDB']['usr']
     ivvport = config['IVVDB']['port']
     ivvhost = config['IVVDB']['host']
+    # Define the global connection
     global pgconnection
-
+    # TODO remove this
     print(ivvdb,ivvpwd,ivvusr,ivvport,ivvhost)
-    
+    # Create the connection
     pgconnection = pgconnect.pgconnect(ivvdb,ivvusr,ivvpwd,ivvhost,ivvport)
 
 def export_to_excel(qry, headings, filepath):
     print('export to excel')
+    # create the cursor from the global connnection
     local_cursor = pgconnection.cursor()
+    # execute the query
     local_cursor.execute(qry)
+    # get the data
     exp_data = local_cursor.fetchall()
+    # close the cursor
     local_cursor.close()
-
+    # define the workbook
     wb = Workbook()
+    # define the sheet
     sheet = wb.active
-
+    # bold the header
     sheet.row_dimensions[1].font = Font(bold = True)
-
+    # write the header
     for col, heading in enumerate(headings, start = 1):
         sheet.cell(row = 1, column = col).value = heading
-
+    # write the data
     for row, rows in enumerate(exp_data, start = 2):
         for col, cell_val in enumerate(rows, start = 1):
             sheet.cell(rows = row, column = col).value = cell_val
-
+    # save the file
     wb.save(filepath)
 
 main(sys.argv[1:])
